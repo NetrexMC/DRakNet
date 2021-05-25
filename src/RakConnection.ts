@@ -16,8 +16,11 @@
  *
  * © Netrex 2020 - 2021
  */
-import Address from "./common/Address.ts";
-import Connection, { ConnectionState } from "./common/Connection.ts";
+ import {
+	Address,
+	Connection,
+	ConnectionState
+} from "netrex";
 import EncapsulatedPacket from "./protocol/EncapsulatedPacket.ts";
 import { OfflinePacketIds } from "./protocol/offline/OfflinePacket.ts";
 import { openConnection, startSession } from "./RakHandler.ts";

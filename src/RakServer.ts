@@ -16,14 +16,19 @@
  *
  * © Netrex 2020 - 2021
  */
-import Address from "../common/Address.ts";
-import Connection from "../common/Connection.ts";
-import NetworkServer, { NetworkType } from "../NetworkServer.ts";
+import {
+	Address,
+	Connection,
+	NetworkServer,
+	NetworkServerEvents,
+	NetworkType
+} from "netrex";
 import RakConnection from "./RakConnection.ts";
 import MOTD from "./util/MOTD.ts";
 import { Stream } from "./util/Stream.ts";
 
 export default class RakServer extends NetworkServer {
+	public channel: NetworkServerEvents = new NetworkServerEvents();
 	public static uniqueId: bigint = BigInt(crypto.getRandomValues(new Uint8Array([0,0,0,0,0,0,0,0])).reduce((r, c) => r += c));
 	public serverType: NetworkType = NetworkType.RakNet;
 	public motd: MOTD = new MOTD();
