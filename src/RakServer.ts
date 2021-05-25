@@ -53,20 +53,25 @@ export default class RakServer extends NetworkServer {
 				const stream = new Stream(request[0]);
 				const origin = Address.from(request[1]);
 
-				if (!this.#connects.has(origin.token)) {
+				if (this.#connects.has(origin.token)) {
+					const session = this.#connects.get(origin.token);
+
+					if (!session) {
+						// we can't handle this.
+						console.log("Could not find valid session.");
+						continue;
+					}
+
+					session.recieve(stream);
+				} else {
+					console.log("Creating session for: " + origin.token);
 					const session = new RakConnection(origin, this);
 					this.#connects.set(origin.token, session);
+					session.recieve(stream);
 				}
-
-				const session = this.#connects.get(origin.token);
-
-				if (!session) {
-					// we can't handle this.
-					continue;
-				}
-
-				session.recieve(stream);
-			} catch {}
+			} catch (e) {
+				console.error(e);
+			}
 		}
 
 		for (let conn of this.connections) {

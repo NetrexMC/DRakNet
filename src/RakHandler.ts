@@ -17,14 +17,26 @@
  * © Netrex 2020 - 2021
  */
 // This file is responsible for RakNek connections
-import { ConnectionState } from "./common/Connection.ts";
+import { ConnectionState } from "netrex";
 import OpenConnectReply from "./protocol/offline/OpenConnectReply.ts";
 import OpenConnectRequest from "./protocol/offline/OpenConnectRequest.ts";
 import SessionInfo from "./protocol/offline/SessionInfo.ts";
+import SessionInfoReply from "./protocol/offline/SessionInfoReply.ts";
+import { UnconnectedPing } from "./protocol/offline/UnconnectedPing.ts";
+import { UnconnectedPong } from "./protocol/offline/UnconnectedPong.ts";
 import RakConnection from "./RakConnection.ts";
 import RakServer from "./RakServer.ts";
 import { Stream } from "./util/Stream.ts";
 export const MAGIC = new Uint8Array([0x00, 0xff, 0xff, 0x00, 0xfe, 0xfe, 0xfe, 0xfe, 0xfd, 0xfd, 0xfd, 0xfd , 0x12, 0x34, 0x56, 0x78 ]);
+
+export function sendPong(connection: RakConnection, stream: Stream) {
+	const ping = new UnconnectedPing().from(stream);
+	connection.send(
+		new UnconnectedPong(
+			ping.clientTime, RakServer.uniqueId, connection.server.motd
+		).parse().buffer
+	);
+}
 
 export function openConnection(connection: RakConnection, stream: Stream) {
 	const request = new OpenConnectRequest().from(stream);
@@ -34,6 +46,8 @@ export function openConnection(connection: RakConnection, stream: Stream) {
 		return;
 	}
 
+	connection.mtuSize = request.mtuSize;
+
 	connection.send(
 		new OpenConnectReply(RakServer.uniqueId, false, request.mtuSize).parse().buffer
 	);
@@ -41,4 +55,8 @@ export function openConnection(connection: RakConnection, stream: Stream) {
 
 export function startSession(connection: RakConnection, stream: Stream) {
 	const request = new SessionInfo().from(stream);
+
+	connection.send(
+		new SessionInfoReply(MAGIC, RakServer.uniqueId, connection.address, connection.mtuSize).parse().buffer
+	)
 }

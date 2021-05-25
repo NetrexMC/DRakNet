@@ -23,27 +23,28 @@
 } from "netrex";
 import EncapsulatedPacket from "./protocol/EncapsulatedPacket.ts";
 import { OfflinePacketIds } from "./protocol/offline/OfflinePacket.ts";
-import { openConnection, startSession } from "./RakHandler.ts";
+import { openConnection, sendPong, startSession } from "./RakHandler.ts";
 import RakServer from "./RakServer.ts";
 import { Stream } from "./util/Stream.ts";
 
 export class RakConnection extends Connection {
 	public state: ConnectionState;
 	public address: Address;
-	#server: RakServer;
+	public server: RakServer;
+	public mtuSize: number = 1024;
 
 	public constructor(address: Address, server: RakServer) {
 		super();
 		this.state = ConnectionState.Disconnected;
 		this.address = address;
-		this.#server = server;
+		this.server = server;
 	}
 
 	public terminate(reason: string) {
 		throw new Error("Method not implemented.");
 	}
 	public send(buffer: Uint8Array) {
-		this.#server.send(this.address, buffer);
+		this.server.send(this.address, buffer);
 	}
 
 	public recieve(buf: Stream) {
@@ -52,11 +53,19 @@ export class RakConnection extends Connection {
 		if (this.state === ConnectionState.Disconnected) {
 			// offline packets expected
 			switch (rakId) {
+				case OfflinePacketIds.UnconnectedPing:
+					sendPong(this, buf);
+					break;
 				case OfflinePacketIds.OpenConnectRequest:
+					console.log("Opening connection...");
 					openConnection(this, buf);
 					break;
 				case OfflinePacketIds.SessionInfo:
+					console.log("Starting session...");
 					startSession(this, buf);
+					break;
+				default:
+					console.log("Unknown Packet: " + rakId);
 					break;
 			}
 		}

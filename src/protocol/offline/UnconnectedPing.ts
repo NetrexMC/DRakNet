@@ -17,22 +17,17 @@
  * © Netrex 2020 - 2021
  */
 import { Stream } from "../../util/Stream.ts";
+import { ServerBound } from "../RakPacket.ts";
 import OfflinePacket, { OfflinePacketIds } from "./OfflinePacket.ts";
 
-export class UnconnectedPing extends OfflinePacket {
+export class UnconnectedPing extends OfflinePacket implements ServerBound {
 	public id = OfflinePacketIds.UnconnectedPing;
-	public clientGUID: BigInt;
-	public clientTime: BigInt;
+	public clientGUID!: bigint;
+	public clientTime!: bigint;
 
-	public constructor(time: BigInt, guid: BigInt) {
-		super();
-		this.clientGUID = guid;
-		this.clientTime = time;
-	}
-
-	public static from(stream: Stream): UnconnectedPing {
-		const time: BigInt = stream.readLong();
-		const guid: BigInt = stream.readLong();
-		return new UnconnectedPing(time, guid);
+	public from(stream: Stream): UnconnectedPing {
+		this.clientGUID= stream.readLong();
+		this.clientTime = stream.readLong();
+		return this;
 	}
 }

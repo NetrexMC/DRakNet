@@ -16,8 +16,8 @@
  *
  * © Netrex 2020 - 2021
  */
-import Address from "../../../common/Address.ts";
-import { Stream } from "../../util/Stream.ts";
+import { Address } from "netrex";
+import { readAddress, Stream } from "../../util/Stream.ts";
 import { ServerBound } from "../RakPacket.ts";
 import OfflinePacket, { OfflinePacketIds } from "./OfflinePacket.ts";
 
@@ -28,6 +28,9 @@ export default class SessionInfo extends OfflinePacket implements ServerBound {
 	public clientId!: bigint;
 
 	public from(s: Stream) {
-		
+		s.read(16); // magic
+		this.address = readAddress(s);
+		this.mtu = s.readShort();
+		this.clientId = s.readLong();
 	}
 }

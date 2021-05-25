@@ -19,7 +19,7 @@
 import {
 	BinaryStream as Stream
 } from 'https://raw.githubusercontent.com/RaptorsMC/BinaryUtils/master/mod.ts';
-import Address from "../common/Address.ts";
+import { Address } from "netrex";
 export { Stream };
 // to do: Actual class here
 

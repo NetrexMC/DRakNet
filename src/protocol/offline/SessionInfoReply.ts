@@ -16,31 +16,35 @@
  *
  * © Netrex 2020 - 2021
  */
-import { MAGIC } from "../../RakHandler.ts";
-import { Stream } from "../../util/Stream.ts";
 import { ClientBound } from "../RakPacket.ts";
 import OfflinePacket, { OfflinePacketIds } from "./OfflinePacket.ts";
+import { Address } from "netrex";
+import { Stream, writeAddress } from "../../util/Stream.ts";
 
-export default class OpenConnectReply extends OfflinePacket implements ClientBound {
-	public id = OfflinePacketIds.OpenConnectReply;
-	public serverId: bigint;
-	public secure: boolean;
+export default class SessionInfoReply extends OfflinePacket implements ClientBound {
+	public id = OfflinePacketIds.SessionInfoReply;
+	public magic: Uint8Array;
+	public serverid: bigint;
+	public clientAddress: Address;
 	public mtu: number;
+	public encryption: boolean;
 
-	public constructor(serverid: bigint, secure: boolean, mtu: number) {
+	public constructor(magic: Uint8Array, serverid: bigint, address: Address, mtu: number, encrypt: boolean = false) {
 		super();
-		this.serverId = serverid;
-		this.secure = secure;
+		this.magic = magic;
+		this.serverid = serverid;
+		this.clientAddress = address;
 		this.mtu = mtu;
+		this.encryption = encrypt;
 	}
 
 	public parse(): Stream {
 		const stream = new Stream();
 		stream.writeByte(this.id);
-		stream.append(MAGIC);
-		stream.writeLong(this.serverId);
-		stream.writeBool(this.secure);
+		stream.append(this.magic);
+		writeAddress(stream, this.clientAddress);
 		stream.writeShort(this.mtu);
+		stream.writeBool(this.encryption);
 		return stream;
 	}
 }
