@@ -20,15 +20,34 @@ import {
 	Address,
 	Connection,
 	NetworkServer,
-	NetworkServerEvents,
 	NetworkType
 } from "netrex";
 import RakConnection from "./RakConnection.ts";
 import MOTD from "./util/MOTD.ts";
 import { Stream } from "./util/Stream.ts";
+import { EventEmitter, GenericFunction } from "https://deno.land/std@0.97.0/node/events.ts";
 
-export default class RakServer extends NetworkServer {
-	public channel: NetworkServerEvents = new NetworkServerEvents();
+export enum RakEvent {
+	Accept = "client_accept",
+	Decline = "client_decline",
+	Query = "query",
+	Disconnect = "client_disconnect",
+	GamePacket = "client_batch"
+}
+
+export class RakEventChannel extends EventEmitter {
+	public on(packet: RakEvent.Accept, listener: (connection: RakConnection) => any): this;
+	public on(packet: RakEvent.Decline, listener: (address: Address) => any): this;
+	public on(packet: RakEvent.Disconnect, listener: (connection: RakConnection, reason: string) => any): this;
+	public on(packet: RakEvent.GamePacket, listener: (connection: RakConnection, buf: Uint8Array) => any): this;
+	public on(packet: RakEvent.Query, listener: (address: Address, motd: MOTD) => any): this;
+	public on(chan: RakEvent, listener: GenericFunction): this {
+		return super.on(chan, listener);
+	}
+}
+
+export default class RakServer extends NetworkServer<RakEventChannel> {
+	public channel = new RakEventChannel();
 	public static uniqueId: bigint = BigInt(crypto.getRandomValues(new Uint8Array([0,0,0,0,0,0,0,0])).reduce((r, c) => r += c));
 	public serverType: NetworkType = NetworkType.RakNet;
 	public motd: MOTD = new MOTD();
@@ -58,13 +77,11 @@ export default class RakServer extends NetworkServer {
 
 					if (!session) {
 						// we can't handle this.
-						console.log("Could not find valid session.");
 						continue;
 					}
 
 					session.recieve(stream);
 				} else {
-					console.log("Creating session for: " + origin.token);
 					const session = new RakConnection(origin, this);
 					this.#connects.set(origin.token, session);
 					session.recieve(stream);

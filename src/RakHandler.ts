@@ -25,12 +25,16 @@ import SessionInfoReply from "./protocol/offline/SessionInfoReply.ts";
 import { UnconnectedPing } from "./protocol/offline/UnconnectedPing.ts";
 import { UnconnectedPong } from "./protocol/offline/UnconnectedPong.ts";
 import RakConnection from "./RakConnection.ts";
-import RakServer from "./RakServer.ts";
+import RakServer, { RakEvent } from "./RakServer.ts";
 import { Stream } from "./util/Stream.ts";
 export const MAGIC = new Uint8Array([0x00, 0xff, 0xff, 0x00, 0xfe, 0xfe, 0xfe, 0xfe, 0xfd, 0xfd, 0xfd, 0xfd , 0x12, 0x34, 0x56, 0x78 ]);
 
+/**
+ * Sends query to a connection.
+ */
 export function sendPong(connection: RakConnection, stream: Stream) {
 	const ping = new UnconnectedPing().from(stream);
+	connection.server.channel.emit(RakEvent.Query, connection.address, connection.server.motd);
 	connection.send(
 		new UnconnectedPong(
 			ping.clientTime, RakServer.uniqueId, connection.server.motd
@@ -38,10 +42,14 @@ export function sendPong(connection: RakConnection, stream: Stream) {
 	);
 }
 
+/**
+ * Starts opening a connection
+ */
 export function openConnection(connection: RakConnection, stream: Stream) {
 	const request = new OpenConnectRequest().from(stream);
 
 	if (request.protocol < 10) {
+		connection.server.channel.emit(RakEvent.Decline, connection.address, "Invalid Protocol");
 		connection.terminate("Invalid Protocol");
 		return;
 	}
@@ -53,10 +61,14 @@ export function openConnection(connection: RakConnection, stream: Stream) {
 	);
 }
 
+/**
+ * Opens a session
+ */
 export function startSession(connection: RakConnection, stream: Stream) {
-	const request = new SessionInfo().from(stream);
-
+	new SessionInfo().from(stream);
+	connection.server.channel.emit(RakEvent.Accept, connection);
 	connection.send(
 		new SessionInfoReply(MAGIC, RakServer.uniqueId, connection.address, connection.mtuSize).parse().buffer
-	)
+	);
+	connection.state = ConnectionState.Connected;
 }

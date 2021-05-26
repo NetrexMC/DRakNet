@@ -16,6 +16,15 @@
  *
  * © Netrex 2020 - 2021
  */
-class OnlinePacket {
-	
+export enum OnlinePacketIds {
+	ConnectedPing = 0x00,
+	ConnectedPong = 0x03,
+	ConnectionRequest = 0x09,
+	ConnectionRequestAccept = 0x10,
+	NewConnection = 0x013,
+	Disconnect = 0x15,
+	Incompatible = 0x19
+}
+export class OnlinePacket {
+
 }

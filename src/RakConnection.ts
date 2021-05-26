@@ -48,26 +48,25 @@ export class RakConnection extends Connection {
 	}
 
 	public recieve(buf: Stream) {
-		const rakId = buf.readByte();
-
 		if (this.state === ConnectionState.Disconnected) {
 			// offline packets expected
+			const rakId = buf.readByte();
 			switch (rakId) {
 				case OfflinePacketIds.UnconnectedPing:
 					sendPong(this, buf);
 					break;
 				case OfflinePacketIds.OpenConnectRequest:
-					console.log("Opening connection...");
 					openConnection(this, buf);
 					break;
 				case OfflinePacketIds.SessionInfo:
-					console.log("Starting session...");
 					startSession(this, buf);
 					break;
 				default:
-					console.log("Unknown Packet: " + rakId);
 					break;
 			}
+		} else if (this.state === ConnectionState.Connected || this.state === ConnectionState.Latent) {
+			// connected, performing pre-login stuff
+			const id: number = buf.readByte();
 		}
 	}
 
