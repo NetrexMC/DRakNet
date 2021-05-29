@@ -8,4 +8,5 @@
 // #     context: super,
 // #     excludes: ["current_context"]
 // # });
-// # const byteCode = v8.script.compile(code)
+// # const byteCode = v8.script.compile(code);
+// # @compiler("compile", "ts-v8", bytecode);
