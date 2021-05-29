@@ -25,6 +25,6 @@ export enum OnlinePacketIds {
 	Disconnect = 0x15,
 	Incompatible = 0x19
 }
-export class OnlinePacket {
-
+export abstract class OnlinePacket {
+	public abstract id: OnlinePacketIds;
 }

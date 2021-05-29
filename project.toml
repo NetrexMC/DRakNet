@@ -1,0 +1,34 @@
+[package]
+# The name of your project
+name = "draknet"
+# The author or authors of the project
+authors = [
+     { name = "John", email = "" }
+]
+# entry can be a file name in the "src" directory
+# or it can be "main" which expects a "main" function somewhere in your code.
+# by default this is always "mod.(ts/typesharp/tsh)" therefore not required.
+entry = "mod.ts"
+# The version of the project or library
+version = "1.0.0"
+
+[typesharp]
+# The target typesharp version to use
+version = "0.0.0-build-92.embeded-ts-future-transparency"
+# Binary path
+bin_path = "bin"
+# Compile options
+compile_options = [
+     # Post parse optimizations
+     "po",
+     # Post lex optimizations
+     "pl",
+     # Mangle after parsing
+     "m",
+     # Skip deep error checking during parsing (nested parsing errors)
+     "npe",
+     # Enable experiements
+     "experiments",
+	 # Typescript/JS transpilation
+	 "ts-v8"
+]

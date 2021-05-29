@@ -1,0 +1,7 @@
+10:42:05 Compiling project!
+10:42:05 Error! [103]: Project entry point is left empty, nothing to compile in "mod.ts".
+10:42:05 Error: Tried compiling without main function.
+10:42:06 ----------------------------------------------------------------------------------
+10:42:06 If no solutions are provided please end kill me and tell me what caused the error.
+10:42:06 TypeSharp is still in development so you're seeing this cause ur cool!
+10:42:06 ----------------------------------------------------------------------------------
