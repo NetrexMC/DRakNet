@@ -27,11 +27,5 @@ server.channel.on(RakEvent.GamePacket, (connection: RakConnection, buf: Uint8Arr
 	console.log("Got game packet!");
 });
 server.channel.on(RakEvent.Query, (add: Address, motd: MOTD) => {
-	if (add.ip.search("127") !== -1) {
-		motd.motd = "You are banned";
-		motd.players = { max: 0, online: 1 };
-	} else {
-		motd.motd = "Netrex Server";
-		motd.players = { max: 10, online: 0 };
-	}
+	motd.name = "Testing!!!";
 })

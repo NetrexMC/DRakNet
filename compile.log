@@ -1,22 +1,8 @@
-11:40:32 Compiling project!
-11:40:32 \ Found compiler script.
-11:40:32 \ Script parsed, running.
-11:40:33 Error! [205]: Tried to assign "code" to the type of "v8.Scope" when definition is a type of "string".
-11:40:33 --> [mod.ts]
-11:40:33 6 | const engine = new v8.utils.Isolate();
-11:40:33 7 | const code: v8.Scope = typesharp.cli_core.readCombineSync("./src", {
-11:40:33   |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-11:40:33   \_____________^^^
-11:40:34   | ---> "v8_transpiler.Scope" can not be initialized from type "string".
-11:40:34   | ---> SP.1 > Add a typecast decorator to "v8_transpiler.Scope".
-11:40:34   | ---> SP.2 > Change type from "v8.Scope" to "string" on line 7.
-11:40:34   | ---> 7 | const code: string = typesharp.cli_core.readCombineSync("./src", {
-11:40:34   | --->   |             ~~~~~~
-11:40:34   | --->   \_____________^^^
-11:40:34   | --->   | Type change should be made here.
-11:40:34
-11:40:34 Error: An unknown error occurred. This is most likely because this error has not been defined.
-11:40:34 ----------------------------------------------------------------------------------
-11:40:34 If no solutions are provided please end kill me and tell me what caused the error.
-11:40:34 TypeSharp is still in development so you're seeing this cause ur cool!
-11:40:34 ----------------------------------------------------------------------------------
+05:26:08 Compiling project!
+05:26:08 \ Found compiler script.
+05:26:08 \ Script parsed, running.
+05:26:09 Warning! "typesharp" import unused and discarded. [Saved: 438kb]
+05:26:09 ----------------------------------------------------------------------------------
+05:26:09 If no solutions are provided please end kill me and tell me what caused the error.
+05:26:09 TypeSharp is still in development so you're seeing this cause ur cool!
+05:26:09 ----------------------------------------------------------------------------------

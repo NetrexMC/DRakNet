@@ -33,4 +33,5 @@ export interface ServerBound {
 
 export default abstract class RakPacket {
 	public abstract readonly id: number;
+	public parsed: boolean = false;
 }

@@ -22,8 +22,8 @@ interface PlayerCount {
 }
 
 class MOTD {
-	public motd: string = 'Netrex Server';
-	public name: string = 'NetrexRakNet';
+	public name: string = 'Netrex Server';
+	public serverName: string = 'NetrexRakNet';
 	public protocol: number  = 420;
 	public version: string = '1.17.0';
 	public players: PlayerCount = {
@@ -36,13 +36,13 @@ class MOTD {
 	public toString(): string {
 		 return [
 			  'MCPE',
-			  this.motd,
+			  this.name,
 			  this.protocol,
 			  this.version,
 			  this.players.online,
 			  this.players.max,
 			  this.serverId,
-			  this.name,
+			  this.serverName,
 			  this.gamemode
 		 ].join(';') + ';';
 	}
